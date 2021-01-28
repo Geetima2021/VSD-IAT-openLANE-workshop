@@ -5,8 +5,9 @@
 # Table of contents
 
 - [Overview](#overview)
-- [Pre requisite](#Pre requisite)
-- [Introduction](#Introduction)
+- [Pre requisite](#Prerequisite)
+- [Introduction](#Introduction)'
+- [Day 1](#Day1)
 
 
 
@@ -24,7 +25,10 @@ However, for local use of the openLANE tool a set of instructions are to be foll
  
 Verilog RTL is basically a design written in Verilog Language which is a high level language. Either written in behavioral or structural form famously.
 GDSII is the database file format which industry follows as a standard format for exchange of data related to IC layout. It is a binary file format representing planar geometric shapes, text labels, and other information about the layout in hierarchical form.
- 
+y
+# Day 1 
+
+The workshp starts with the self assessement process via some rapid fire question which assists in determining the understanding of yor poocess follwed by the tutorials to learn the concepts. The tutorial starts with the basic way of interacting with computers.
  
 
 

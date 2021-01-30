@@ -7,7 +7,7 @@
 - [Overview](#overview)
 - [Pre requisite](#Prerequisite)
 - [Introduction](#Introduction)'
-- [Day 1 ](#Day1)
+- [Day 1 Inception and introduction of openlane tool openLANE and skywater 130 nm](#day)
   - [Introduction to QFN -48 package, chip, pads, core, die, IPs](#Imtro)
   - [Introduction to RISCV](#RiscV)
   - [OpenLANE design ASIC flow](#soc)
@@ -15,19 +15,21 @@
   - [Invoking openLANE](#invoking)
   - [Import package](#import)
   -[Prepare design](#prepare)
-- [Day 2](#Day2)
+- [Day 2 Floorplan and placement](#Day2)
   - [Floorplan](#Floorplan)
-  - [Cell core and die area](#Cell core and die area)
-  - [Aspect ratio and utilization factor](#Aspect ratiod and utilization factor)
-  - [Concept of pre placed cells](#Concept of pre placed cells)
-  - [Decoupling capacitors](#Decoupling capacitors)
-  - [Power planning](#Power planning)
-  - [Pin placement](#Pin placement)
-  - [Cell design flow nad characterization](#Cell design flow nad characterization)
-- [Day 3](#Day3)
-  - [Design library cells](9#Designing library cells)
-  - [Spice dexk extraction from magic](#Spice dexk extraction from magic)
-  - 
+  - [Cell core and die area](#Cell)
+  - [Aspect ratio and utilization factor](#Aspect)
+  - [Concept of pre placed cells](#Concept)
+  - [Decoupling capacitors](#Decoupling)
+  - [Power planning](#Power)
+  - [Pin placement](#Pin)
+  - [Cell design flow and characterization](#designn)
+- [Day 3 Design library cells and ngspice characterization](#Day3)
+  - [Design library cells](#Designing)
+  - [Spice deck extraction from magic](#Spice)
+  - [DRC check](#DRC)
+- [Day 4 Pre layout timing analysis and clock tree synthesis](#Pre)
+  - [](#Pre)
   
   
 
@@ -48,7 +50,7 @@ Verilog RTL is basically a design written in Verilog Language which is a high le
 GDSII is the database file format which industry follows as a standard format for exchange of data related to IC layout. It is a binary file format representing planar geometric shapes, text labels, and other information about the layout in hierarchical form. The workshop starts with the self assessement process via some rapid fire question which assists in determining the understanding of the process follwed by the tutorials to learn the concepts. The main focus of this workshop is to use openLANE inconjuction with Google SKywater 130nm for full open source ASIC design.
  
 
-# Day 1 - Part 1
+# Day 1 Inception and introduction of openlane tool openLANE and skywater 130 nm
 
 ### Introduction to QFN -48 package, chip, pads, core, die, IPs
 
@@ -98,7 +100,7 @@ As shown in the figure above, a number of stages and sub stages are carried out 
 -  GDSII Generation
    -  Magic - Streaming out the final GDSII layout file from the routed def 
    
-### Part 2 - Det familiar with EDA tools 
+###  Get familiar with EDA tools 
 Inorder to access the labs, labs instances is present in VSD_IAT flow which redirects to a vnc network. The vnc network allows us to remotely access the ubuntu terminal for performing the lab instances. The file required for carrying out the workshop are present in the path /work/tools/openlane_working_dir/. For running the openLANE flow, the treminal should be in the openlane path, /work/dir/openlane_working_dir/openLANE_flow. All the steps are to carried out along this path.
 
 ### Invoking openLANE
@@ -136,7 +138,7 @@ package require openLANE 0.9
  ```bash
  prep design picorv32a -tag First -overwrite
  ```
- # Day 2
+ # Day 2 Floorplan and placement
  ## FloorPlan
  During floor planning a number of parameters are to de set. A well define floor plan leads to an ASIC design with high performance and optimunm area. The parameters set during floor plan are:
  - Core and die area
@@ -201,6 +203,7 @@ For proper pin placement the connectivity information coded using verilog/vhdl l
  ```bash
  magic -T <tech read path> <lef read path> <def read floorplan> &
  ```
+ ![39](https://user-images.githubusercontent.com/63381455/106362267-e8883300-6347-11eb-9c76-7bb748ebfa55.JPG)
  
  ### Placement :
  After the floorplan the next stage is the placement stage. In thoi stage the placement of standard cell is done . Placement in openLANE is a two step process global placement and detailed placement. Global placement is a an optimize one where the reduction in the wirelength by half power wavelength is done. There after global placement is done which is a legal placement adhereing to the global placement optimozation. The output of the placement stage is also adef file obtained at the placement folder inside the result folder. Again the output of the placement stage is viewed using the magic tool
@@ -209,7 +212,7 @@ For proper pin placement the connectivity information coded using verilog/vhdl l
  magic -T <tech read path> <lef read path> <def read placement> &
  ```
 
-# Cell design flow nad characterization
+# Cell design flow aad characterization
 
 Cell design flow consist of three parts input, design steps and output as shown in figure below.
 
@@ -228,18 +231,27 @@ Cell design flow consist of three parts input, design steps and output as shown 
 8.	Provide the necessary simulation command
 9. Feed in the characterisation file containing steps 1-8 into the GUNA software whose output is .LIB file containing the timing, noise and power characterization
 
-# Day 3
+# Day 3 Design library cells and ngspice characterization
  
 ### Designing library cells
 
 1. Git clone of vsdstdcelldesign
 
 For the prpose of the workshop already designed standalone standard cell is considered. For that vsdstdcelldesig is git clone form https://github.com/nickson-jose/vsdstdcelldesign. A folder is created inside the openLANE folder. It consists of a layout file sky130_inv.mag which can be viewd in magic layout window as 
-`magic -T sky130A.tech sky130_inv.mag &`. '
+`magic -T sky130A.tech sky130_inv.mag &`. The color pallete on the right side of the magic layout window describes the different layers and and components used in the layout window. 
+
+![2](https://user-images.githubusercontent.com/63381455/106362371-6f3d1000-6348-11eb-8465-385ca864306f.JPG)
+
+### DRC Check
+
+Magic layout allows to view DRC check if any. The DRC error are defined by numerical value. A DRC value = 0 indicates no error and any other value defines error. The DRC error can be removed by using the required color palette.
+
+![3](https://user-images.githubusercontent.com/63381455/106362501-35b8d480-6349-11eb-869b-cf71dd1eca76.JPG)
+
 
  ### Spice dexk extraction from magic
   
-To xtract the standard cell we go to the tckon window and type the following set of commands
+To extract the standard cell we go to the tckon window and type the following set of commands
 
 - extract all 
 - ext2spice cthreh 0 rthresh 0 (create an sky130_inv.ext file)
@@ -252,9 +264,36 @@ The spice is open and the necessary changes are done and there after ngspice is 
 Transition time = time(slew_high_rise_thr) - time(slew_low_rise_thr)
 Propagation delay = time(out_*_thr) - time(in_*_thr)
 ```
+![1](https://user-images.githubusercontent.com/63381455/106362343-3ef57180-6348-11eb-8b74-1b9d63939988.JPG)
+
+The desired values can be retrive from the graph by right clicking on the part of the graph and placing the cursor on the point. The x axis and y axis value are diplayed in the terminal inside ngspice.
+
+# - Day 4 Pre layout timing analysis and clock tree synthesis
+
+### LEF file
+
+We need to extract the lef file from the .mag file. The lef file is needed to plug in the custom built inverter into the picorv32a core. The LEF file contains information regarding the IO ports, the ground ports and power ports. It does not contain the logical interconnection information. For the PnR flow of the standard cells certain guidelines are to be followed. 
+
+ a.	The input and output port must lie in the intersection of horizontal and vertical track – li1 metal layer.
+ b.	The width of the standard cell must be odd multiple of track pitch.
+ c. c.	The height of the standard cell must be odd multiple of vertical track pitch.
+ 
+ The path where the tracks info are located is -  cd pdks/sky130A/libs.tech/openlane/sky130_fd_sc_hd – vimtracks.info. The track info file are obtained by using the grid info command on the tckon window  `Grid 0.46um 0.34um 0.23um 0.17um`.
+ 
+ ### Steps to covert magic cell layout to standard LEF format
+ 1.	Port definition are required to extract the lef file only they have no work in magic. Now save theSave sky130_vsdinv.mag
+```bash
+Magic –T sky130A.tch sky130_vsdinv.mag
+```
+2.	In tckon window type – lef write (lef file will be created with the same name as the mag file `sky130_vsdinv.lef'
+
+Prior to plugging the custom made `sky130_vsdinv.lef` into picorv32 a core, certain files are to plugged in to the 
 
  
  
+ 
+
+
 
 
 

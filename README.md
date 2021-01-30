@@ -119,7 +119,7 @@ package require openLANE 0.9
   
   
   ```bash
-  prep -design picorvv32a -tag First
+  prep -design picorvv32a -tag Geeti
   ```
   ![3](https://user-images.githubusercontent.com/63381455/106351788-6296c880-6304-11eb-995c-cf4593dbaad7.JPG)
   
@@ -139,35 +139,64 @@ package require openLANE 0.9
  - Power planning (done later in openLANE
  - Placement of input and output pins
   
- ### Core area and die area : While defining the core and die area the dimensions of the standard cells are to be considered inordet to arrive to an optimum size. After finding the dimmensions of the standard cells all of them are clubbed to together the get the overall dimension. In the core area the fundamental logic is placed wheras 'die', which consists of the core is a small semiconductor specimen on which the fundamental circuit is fabricated. 
+ ### Core area and die area :
+ 
+ While defining the core and die area the dimensions of the standard cells are to be considered inordet to arrive to an optimum size. After finding the dimmensions of the standard cells all of them are clubbed to together the get the overall dimension. In the core area the fundamental logic is placed wheras 'die', which consists of the core is a small semiconductor specimen on which the fundamental circuit is fabricated. 
  
   ![1-1](https://user-images.githubusercontent.com/63381455/106354196-e9a06c80-6315-11eb-9b10-d7a2f387026e.JPG)
   
-###  Aspect ratio and utilization factor : The two are important description of floorplan. Aspect ratio is the ratio of the height of the core by the width of the core. It bascically defines the shape of a chip, aspect ratio = 1 means the chip is square in shape and any other value indicates that the chip is rectangle. Utilization factor defines the area covered by the netlist in the core. A utilization factor of 1 indicates that the entire core is occupied by the core which is not at all feasible. A utilization factor of 0.5 - 0.7 is considerd as optimal. 
+###  Aspect ratio and utilization factor :
+
+The two are important description of floorplan. Aspect ratio is the ratio of the height of the core by the width of the core. It bascically defines the shape of a chip, aspect ratio = 1 means the chip is square in shape and any other value indicates that the chip is rectangle. Utilization factor defines the area covered by the netlist in the core. A utilization factor of 1 indicates that the entire core is occupied by the core which is not at all feasible. A utilization factor of 0.5 - 0.7 is considerd as optimal. 
 
 ![5](https://user-images.githubusercontent.com/63381455/106354493-338a5200-6318-11eb-93a0-80552f1135c8.JPG)
 
-### Concept of pre placed cell : Pre placed cells allows the granulizing of a larger design for usage whenever required in the design. Pre placed cells or Macros and IP's have user defined loactions and hence are placed on the chip before automated placement and routing. The pre placed are implemented once and can be instantiated mulitiple times in the netlist.
+### Concept of pre placed cell : 
 
-### Decoupling capcitors : Decoupling capacitors are placed locally around the pre-placed cells. The decoupling capacitor is a large capacitor completely full of charge whose voltage is equivalent to the power supply. During switching activity the decoupling capacitor decouples the circuit from the main supply and provides the necessary voltage required by the pre placed cells. The importance od decoupling capacitor is due the fact tha voltage drop across the wire interconnects between the main supply and the circuit may result in unwanted noise margin which may cause the preplaced cell ti be in the undeined region and behave abnormally.
+Pre placed cells allows the granulizing of a larger design for usage whenever required in the design. Pre placed cells or Macros and IP's have user defined loactions and hence are placed on the chip before automated placement and routing. The pre placed are implemented once and can be instantiated mulitiple times in the netlist.
+
+### Decoupling capcitors : 
+
+Decoupling capacitors are placed locally around the pre-placed cells. The decoupling capacitor is a large capacitor completely full of charge whose voltage is equivalent to the power supply. During switching activity the decoupling capacitor decouples the circuit from the main supply and provides the necessary voltage required by the pre placed cells. The importance od decoupling capacitor is due the fact tha voltage drop across the wire interconnects between the main supply and the circuit may result in unwanted noise margin which may cause the preplaced cell ti be in the undeined region and behave abnormally.
 
 ![7-8](https://user-images.githubusercontent.com/63381455/106355373-6daa2280-631d-11eb-95b8-d802c10bcef1.JPG)
 
-### Power planning : As all coupling capacitors present in the circuit demands the power suppy simultaneosly a single power supply cannot adhere to the demands which reult in noise in the circuit cause due to voltage groop or ground bounce. Hence, power planning is very important part of floor planning. During this stage mulltiple power supply are placed in a chip for proper fuctioning. One structure for the power planning is the mseh structure where multiple power and groud lines are arrange in horizontal abd vertical manner as shown in figure below.
+### Power planning : 
+
+As all coupling capacitors present in the circuit demands the power suppy simultaneosly a single power supply cannot adhere to the demands which reult in noise in the circuit cause due to voltage groop or ground bounce. Hence, power planning is very important part of floor planning. During this stage mulltiple power supply are placed in a chip for proper fuctioning. One structure for the power planning is the mseh structure where multiple power and groud lines are arrange in horizontal abd vertical manner as shown in figure below.
 
 ![11](https://user-images.githubusercontent.com/63381455/106355851-b0b9c500-6320-11eb-935a-9cf3d24f13b1.JPG)
 
-### Pin placement : For proper pin placement the connectivity information coded using verilog/vhdl language called netlist is considered. The location of input and output pin depensd upon the conncetivity requirement and the designer. However, the basic trend is to select a location which results in reduce connectivity length. Optimal pin placement is done taking care about the less buffering and less amount of power consumption. The size of the clock pins are wider as compared to the other data pins.  The locgiical cell blockage is done to make sure that the automated PnR does not used the are for placement of cells.
+### Pin placement : 
+
+For proper pin placement the connectivity information coded using verilog/vhdl language called netlist is considered. The location of input and output pin depensd upon the conncetivity requirement and the designer. However, the basic trend is to select a location which results in reduce connectivity length. Optimal pin placement is done taking care about the less buffering and less amount of power consumption. The size of the clock pins are wider as compared to the other data pins.  The locgiical cell blockage is done to make sure that the automated PnR does not used the are for placement of cells.
 
 ![12-13](https://user-images.githubusercontent.com/63381455/106356122-232ba480-6323-11eb-909e-3f8f3c279698.JPG)
 
 ### Floorplan in openLANE
-  To run floorplan we simply need to run the commandd: 
+  To run floorplan we simply need to run the command.
   
   ```bash
   run_floorplan
   ```
-  
+  Prior to running floorplan we can check the different switches available for floor planning at the location ./openlane/configuration. This folder also contains the different tcl files for each step where the default values are taken. The switches required as per design can be set at ./openlane/design/picorv32a/comfig.tcl file. Some configurations are also mentioned in sky130A_sky130_fd_sc_hd_config.tcl file. The precedence of tcl file is as follows 
+ 
+ 1. sky130A_sky130_fd_sc_hd_config.tcl file (./openlane/design/picorv32a/)
+ 2. config.tcl (./openlane/design/picorv32a/)
+ 3. floorplan.tcl (./openlane/configuration)
+ 
+ The output of floorplan is a def file find in ./designs/picorv32a/runs/Geeti/results/floorplan/picorv32.floorplan.def. Inorder to view the output of floorplan in magic, we need to provide 3 files
+ 1. sky130.tech file (./pdks/sky130A/libs.tech/magic/)
+ 2. merged.lef file (./designs/picorv32a/runs/Geeti/tmp)
+ 3. picorv32a.floorplan.def (./designs/picorv32a/runs/Geeti/results/floorplan)
+ 
+ To invoke magic we need to use the command:
+ ```bash
+ magic -T <tech read path> <lef read path> <def read>
+ ```
+ 
+ 
+ 
 
 
 

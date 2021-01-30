@@ -7,10 +7,12 @@
 - [Overview](#overview)
 - [Pre requisite](#Prerequisite)
 - [Introduction](#Introduction)'
-- [Day 1](#Day1)
-- - [Introduction to QFN -48 package, chip, pads, core, die, IPs](#Imtro)
-- - [Introduction to RISCV](#RiscV)
-- - [SOC and openLANE](#soc)
+- [Day 1 - Part 1](#Day1)
+  - [Introduction to QFN -48 package, chip, pads, core, die, IPs](#Imtro)
+  - [Introduction to RISCV](#RiscV)
+  - [OpenLANE design ASIC flow](#soc)
+  - [Part -2 Get familiar with EDA tools](#familiar)  
+
 
 
 
@@ -26,7 +28,7 @@ However, for local use of the openLANE tool a set of instructions are to be foll
  # Introduction
  
 Verilog RTL is basically a design written in Verilog Language which is a high level language. Either written in behavioral or structural form famously.
-GDSII is the database file format which industry follows as a standard format for exchange of data related to IC layout. It is a binary file format representing planar geometric shapes, text labels, and other information about the layout in hierarchical form. The workshp starts with the self assessement process via some rapid fire question which assists in determining the understanding of yor poocess follwed by the tutorials to learn the concepts. The tutorial starts with the basic way of interacting with computers.
+GDSII is the database file format which industry follows as a standard format for exchange of data related to IC layout. It is a binary file format representing planar geometric shapes, text labels, and other information about the layout in hierarchical form. The workshop starts with the self assessement process via some rapid fire question which assists in determining the understanding of the process follwed by the tutorials to learn the concepts. The main focus of this workshop is to use openLANE inconjuction with Google SKywater 130nm for full open source ASIC design.
  
 
 # Day 1 - Part 1
@@ -51,7 +53,33 @@ Integrated circuits or IC are devices where in number of componenets such as tra
 
 ![12-11](https://user-images.githubusercontent.com/63381455/106311580-62a6b200-628b-11eb-8120-bf4e77a6edca.JPG)
 
-### SOC and openLANE
+### OpenLANE ASIC design flow
+
+For designing of an open source ASIC design flow, three components are required the RTL IP's EDA tools and PDK. Until the recent past the RTL Ip's and EDA tools are readily available however open source pdk was out of question. PDK or process design kit are cluster of data files and ducuments which serves as an interface between the designers and foundry. The PDK includes technology infomation, device models, design rules, IO libraries, digital standard libraries etc required for fariicating a process for the EDA tools used in designing an IC. PDK are traditionally close-source with lots of sensitive information and its comes with non-disclosure agreement and  thus a major limitation for open source digital ASIC design. This limitation brought Google and skywater together and they came up with the first ever open source PDK skywater 130nm on June 30, 2020. OpenLANE is built around Skywater 130nm process and is capable of performing full RTL2GDS flow as shown in figure below. 
 
 
+![Openlane_flow](https://user-images.githubusercontent.com/63381455/106347844-8c8dc200-62e7-11eb-9f81-1baad994bcd8.JPG)
+
+As shown in the figure above, a number of stages and sub stages are carried out in openLANE. By default all the stages of the flow run interatively in a sequence and number of open source EDA tools are used for performing various fuctionalities. OpenLANE integrate the various open source tools in a single PnR flow. The various tools required for interative flow of openLANE along with their functionalities are mentioned below.
+
+- Synthesis 
+    - Yosys - generates gate level netlist
+    - abc - performs technology mapping
+    - OpenSTA - performs pre layout static timing analysis to generate timing reports
+- Floorplan
+    - init_fp - Defining the core area for the macro as well as the cell sites and the tracks 
+    - ioplacer - Places the macro input and output ports
+    - pdn - Generates the power distribution network
+- Placement    
+    - RePLace - Performs global placement
+    - OpenDP - Perfroms detailed placement to legalize the globally placed components
+- Clock tree synthesis
+    - Triton CTS -Synthesizes the the clock tree network 
+-  Routing
+    - FastRoute - Performing global routing to generate a guide file for the detailed router 
+    - TritonRoute - Performing detailed routing 
+-  GDSII Generation
+   -  Magic - Streaming out the final GDSII layout file from the routed def 
+   
+  # Part 2 - Det familiar with EDA tools 
 

@@ -23,6 +23,13 @@
   - [Decoupling capacitors](#Decoupling capacitors)
   - [Power planning](#Power planning)
   - [Pin placement](#Pin placement)
+  - [Cell design flow nad characterization](#Cell design flow nad characterization)
+- [Day 3](#Day3)
+  - [Design library cells](9#Designing library cells)
+  - [Spice dexk extraction from magic](#Spice dexk extraction from magic)
+  - 
+  
+  
 
 
 
@@ -185,19 +192,69 @@ For proper pin placement the connectivity information coded using verilog/vhdl l
  2. config.tcl (./openlane/design/picorv32a/)
  3. floorplan.tcl (./openlane/configuration)
  
- The output of floorplan is a def file find in ./designs/picorv32a/runs/Geeti/results/floorplan/picorv32.floorplan.def. Inorder to view the output of floorplan in magic, we need to provide 3 files
+ The output of floorplan is a def file find in ./designs/picorv32a/runs/Geeti/results/floorplan/picorv32.floorplan.def which defines the area of the chip. Inorder to view the output of floorplan in magic, we need to provide 3 files
  1. sky130.tech file (./pdks/sky130A/libs.tech/magic/)
  2. merged.lef file (./designs/picorv32a/runs/Geeti/tmp)
  3. picorv32a.floorplan.def (./designs/picorv32a/runs/Geeti/results/floorplan)
  
  To invoke magic we need to use the command:
  ```bash
- magic -T <tech read path> <lef read path> <def read>
+ magic -T <tech read path> <lef read path> <def read floorplan> &
  ```
  
+ ### Placement :
+ After the floorplan the next stage is the placement stage. In thoi stage the placement of standard cell is done . Placement in openLANE is a two step process global placement and detailed placement. Global placement is a an optimize one where the reduction in the wirelength by half power wavelength is done. There after global placement is done which is a legal placement adhereing to the global placement optimozation. The output of the placement stage is also adef file obtained at the placement folder inside the result folder. Again the output of the placement stage is viewed using the magic tool
  
- 
+ ```bash
+ magic -T <tech read path> <lef read path> <def read placement> &
+ ```
 
+# Cell design flow nad characterization
+
+Cell design flow consist of three parts input, design steps and output as shown in figure below.
+
+![25](https://user-images.githubusercontent.com/63381455/106358822-8e31a700-6334-11eb-9dc8-4cde38b566fd.JPG)
+
+## Characterizatiion
+ Standard ccll library consists of cells with diffirent functionality, different threshold voltage, different drive strength and different sizes. Based on the design requirement we can use the cell. These cells are needs yo be characterized by the liberty files to be used by the synthesis tool for optimal circuit arrangement. The cell are characterize by application software GUNA. The characteization flow are as follows.
+ 
+1.	Read the model file
+2.	Read the extracted spice netlist
+3.	Recognize the behavior of the buffer
+4.	Read the sub circuit of buffer
+5.	Read in the necessary power supply
+6.	Apply the stimulus
+7.	Provide the necessary output capacitances
+8.	Provide the necessary simulation command
+9. Feed in the characterisation file containing steps 1-8 into the GUNA software whose output is .LIB file containing the timing, noise and power characterization
+
+# Day 3
+ 
+### Designing library cells
+
+1. Git clone of vsdstdcelldesign
+
+For the prpose of the workshop already designed standalone standard cell is considered. For that vsdstdcelldesig is git clone form https://github.com/nickson-jose/vsdstdcelldesign. A folder is created inside the openLANE folder. It consists of a layout file sky130_inv.mag which can be viewd in magic layout window as 
+`magic -T sky130A.tech sky130_inv.mag &`. '
+
+ ### Spice dexk extraction from magic
+  
+To xtract the standard cell we go to the tckon window and type the following set of commands
+
+- extract all 
+- ext2spice cthreh 0 rthresh 0 (create an sky130_inv.ext file)
+- ext2spice sky130_inv.spice
+
+The spice is open and the necessary changes are done and there after ngspice is used to view the plots. The output plot is then plotted by executing  the command plot as
+`plot <out> vs time <a>`. From the plot we can find out three important parameters of the plot rise time, fall time and propagation delay. Ris time is the time taken by the signal to move from 20% to 80% of its maximum value. The difference of the two the rise transition time and vice versa for fall transition time. Propagation delay is differnce between of 50% of signal output to 50% of the signal input.
+
+```bash
+Transition time = time(slew_high_rise_thr) - time(slew_low_rise_thr)
+Propagation delay = time(out_*_thr) - time(in_*_thr)
+```
+
+ 
+ 
 
 
 

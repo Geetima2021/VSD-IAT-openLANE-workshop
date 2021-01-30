@@ -11,8 +11,10 @@
   - [Introduction to QFN -48 package, chip, pads, core, die, IPs](#Imtro)
   - [Introduction to RISCV](#RiscV)
   - [OpenLANE design ASIC flow](#soc)
-  - [Part -2 Get familiar with EDA tools](#familiar)  
-
+  - [Part -2 Get familiar with EDA tools](#familiar)   
+        - [Invoking openLANE](#invoking)
+        - [Import package](#import)
+        -[Prepare design](#prepare)
 
 
 
@@ -81,5 +83,42 @@ As shown in the figure above, a number of stages and sub stages are carried out 
 -  GDSII Generation
    -  Magic - Streaming out the final GDSII layout file from the routed def 
    
-  # Part 2 - Det familiar with EDA tools 
+### Part 2 - Det familiar with EDA tools 
+Inorder to access the labs, labs instances is present in VSD_IAT flow which redirects to a vnc network. The vnc network allows us to remotely access the ubuntu terminal for performing the lab instances. The file required for carrying out the workshop are present in the path /work/tools/openlane_working_dir/. For running the openLANE flow, the treminal should be in the openlane path, /work/dir/openlane_working_dir/openLANE_flow. All the steps are to carried out along this path.
 
+### Invoking openLANE
+
+The openLANE can be invoked in a non-interactive/autonomous flow or interactive flow. For invoking openLANE in interactive mode we need to type the commannd: 
+
+```bash
+./flow.tcl -interactive  
+```
+### Import package
+OpenLANE tools requires a number of software dependencies and thus we need to import the package via the command:
+
+```bash
+package require openLANE 0.9
+```
+
+ ### Prepare design
+ 
+ The prepare design stage is use to prepare a folder for our design.
+ 
+ ```bash
+ prep -design picorvv32a
+ ```
+  The above will create a folder runs in the ./design/picorv32a/runs for maintaining our design which by default will create a folder with date folder name after each run. The folder is iteratively created after each run. Howeevr if we want a single folder be created and each run thet particulare folder is updated we need to use the -tag switch in the prep command which is:  
+  
+  
+  ```bash
+  prep -design picorvv32a -tag First
+  ```
+  ![3](https://user-images.githubusercontent.com/63381455/106351788-6296c880-6304-11eb-995c-cf4593dbaad7.JPG)
+  
+  The figure showing the above three steps is as shown in figure above.
+ Also for overwriting the runs for new run we need to use the siwtch -overwrite as follows. The above will erase all the changes in the runs folder and needs to be re done.
+ 
+ ```bash
+ prep design picorv32a -tag First -overwrite
+ ```
+  

@@ -29,7 +29,8 @@
   - [Spice deck extraction from magic](#Spice)
   - [DRC check](#DRC)
 - [Day 4 Pre layout timing analysis and clock tree synthesis](#Pre)
-  - [](#Pre)
+  - [LEF file](#lef)
+  - [Fixing slack violations](#slack)
   
   
 
@@ -211,6 +212,7 @@ For proper pin placement the connectivity information coded using verilog/vhdl l
  ```bash
  magic -T <tech read path> <lef read path> <def read placement> &
  ```
+![global_placement](https://user-images.githubusercontent.com/63381455/106393618-28b9e500-641e-11eb-8ae5-289a28a754ad.JPG)
 
 # Cell design flow aad characterization
 
@@ -287,14 +289,37 @@ Magic –T sky130A.tch sky130_vsdinv.mag
 ```
 2.	In tckon window type – lef write (lef file will be created with the same name as the mag file `sky130_vsdinv.lef'
 
-Prior to plugging the custom made `sky130_vsdinv.lef` into picorv32 a core, certain files are to plugged in to the 
+Prior to plugging the custom made `sky130_vsdinv.lef` into picorv32 core, all the design files are to copied to ./design/picorv32a/src/ folder. Also the timing lib viz sky130_fd_sc_hd_typicsl.lib, sky130_fd_sc_hd_fast.lib sky130_fd_sc_hd_slow.lib and tyoical,lib file in ./opemLANE_flow/vsdsedcelldesign/lib/ folder is to be copied to ./design/picorv32a/src/ folder. We use the cp (copy) command to do so
+```bash
+cp <source path> <destination path>
+cp ./opemLANE_flow/vsdsedcelldesign/lib/sky130_fd_sc_typicsl.lib ./design/picorv32a/src/
+```
+OpenLANE has the ability of making changes in the fly and thus we can the custom design standard cell into the cpu core and then rerun the floorplanning and placement stage without invoking the tool. Inorder to include the design into the picorv32a core we used the following commmands to obtain the sky130_vsdinv.lef file after invoking the openLANE_flow. We need to set the necessary liberties in the config.tcl file in picorv32a folder.
 
- 
- 
- 
+```bash
+./flow.tcl -interactive
+```
+```bash
+package require openlane 0.8
+```
+```bash
+prep -design picorv32a -tag Geeti -overwrite
+```
+The `overwrite` switch shall delete whatever contents are available in the Geeti folder the floorplan, placement etc is to be executed over again. We add the follwing commands to make the neccessary change on the ./Geeti/tmp/merged.lef file. The commands are
+```bash
+set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+```
+```bash
+add_lefs -src $lef
+```
+Next the synthesis is again executed and it comes to notice that the slack is negative which is not acceptable.
+```bash
+run_synthesis
+```
+![3](https://user-images.githubusercontent.com/63381455/106393301-556cfd00-641c-11eb-9507-150e86e27a5f.JPG)
 
+### Fixing slack violations
 
-
-
+Slack violations are important issues to be tackled and are checked after each stages. For this the static timing analysis is to be done to ensure that the the set up and hold slack are maintained within the prescribed limits viz 0 or above. The timing performance of the design is analyse using the openSTA tool. During the pre cts we are mostly concern with the set up timing analysis. The sta tool basically gives information about the worst negative slack and total negative slack. 
 
 

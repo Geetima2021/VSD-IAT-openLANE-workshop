@@ -270,7 +270,7 @@ Propagation delay = time(out_*_thr) - time(in_*_thr)
 
 The desired values can be retrive from the graph by right clicking on the part of the graph and placing the cursor on the point. The x axis and y axis value are diplayed in the terminal inside ngspice.
 
-# - Day 4 Pre layout timing analysis and clock tree synthesis
+# Day 4 Pre layout timing analysis and clock tree synthesis
 
 ### LEF file
 
@@ -318,16 +318,30 @@ run_synthesis
 ```
 ![3](https://user-images.githubusercontent.com/63381455/106393301-556cfd00-641c-11eb-9507-150e86e27a5f.JPG)
 
+Here we invoke the magic tool to check whether our custom made buffer is added into the design via the command `magic -T <tech read> <lef read> <def read>`. The magic window is open and we can scroll into the window to check.
+
+![4](https://user-images.githubusercontent.com/63381455/106433470-462a9580-6496-11eb-966f-a1f5d19b9a94.JPG)
+
+
 ### Fixing slack violations
 
-Slack violations are important issues to and has to be rectified for optimum perfrmance of the ic. For this the static timing analysis is to be done to ensure that the the set up and hold slack are maintained within the prescribed limits viz 0 or above. The timing performance of the design is analyse using the openSTA tool. Prior to performing the cts the timing performance of the design is to be checked usign sta tool. For this the configuration file `pre_sta.conf` is invoked by the sta tool . THe configuration file along with the design sdc file is to copied into the `./picorv32a/src/` folder. After invoking the pre_sta.conf file in sta tool`sta pre_sta.conf`, the timing information of the design which includes the skew, delays, data arrival time, data required time etc is defined which is the one obtained during the synthesis stage.
+Slack violations are important issues and has to be rectified for optimum performance of the design. For this the static timing analysis is to be done to ensure that the the set up and hold slack are maintained within the prescribed limits viz 0 or above. The timing performance of the design is analyse using the openSTA tool. Prior to performing the cts the timing performance of the design is to be checked usign sta tool. For this the configuration file `pre_sta.conf` is invoked by the sta tool . THe configuration file along with the design sdc file is to copied into the `./picorv32a/src/` folder. After invoking the pre_sta.conf file in sta tool`sta pre_sta.conf`, the timing information of the design which includes the skew, delays, data arrival time, data required time,fao etc is defined which is the one obtained during the synthesis stage.
 
-Now as the design requirement is that the set up slack and the hold slack should be 0 or positive, certain design correction steps are to be done which includes.
+Now as the design requirement viz set up slack and the hold slack should be 0 or positive, certain design correction steps are to be done which includes.
 
-a. Setting the `SYNTH_STRATEGY` switch
-b. Setting the `SYNTH_BUFFERING` switch
-c. Setting the `SYNTH_SIZING` switch
-d. Optimizing the maximum fan out `SYNTH_MAX_FANOUT) `
+1. Setting the `SYNTH_STRATEGY` switch
+2. Setting the `SYNTH_BUFFERING` switch
+3. Setting the `SYNTH_SIZING` switch
+4. Optimizing the maximum out fanout `SYNTH_MAX_FANOUT`
 
+All the above are changed using the openLANE tool by using `set ::env(switch) <required parameter>`. Now we again run the synthesis in the openSTA enviroment and observe the set up and hold timing slack and there is good improvement in the values though not the required value.
 
+![7](https://user-images.githubusercontent.com/63381455/106428291-bb926800-648e-11eb-8801-a5684044ce6b.JPG)
 
+Next further improvement is to be done. For that the table is observed where certain buffer nets whose capacitance as well as the delay is also high resulting in subsequent increase in the delay values is considered. The number of nets driven by the particular buffer is viwed inside the openSTA using `Report_net –connections <net>`. As the buffer used sky130_fd_sc_hd_buf_1 is of low drive strength it is replaced by higher buffer drive strength sky130_fd_sc_hd_buf_4, sky130_fd_sc_hd_buf_8 or sky130_fd_sc_hd_buf_16. The replacement is done using sta command replace as `replace <cell instance> <lib cell>`. For any information regarding a particular command, `help <command name>` can be used. Thereafter we can check whether the changes has resulted in improvement or not using `Report_checks –fields {net cap slew input pins}  -digits 4`, where the digit attribute is optional, it simply shows the values upto 4 decimal places. The report check shows improvement in the slack timing but still not proper and we can try to further improve the timings.
+
+![2](https://user-images.githubusercontent.com/63381455/106431369-29d92980-6493-11eb-9636-f9384aaafadf.JPG)
+
+After improving the slack to as minimum value as possible the obained netliss is to be changed in the verilog file for further use by the openLANE flow. The verilog file in the synthesis path is to be updated using `write_verilog <path>`
+
+Finally the floorplan and placement is again executed in the openLANE flow. The next stage is clock tree synthesis. During this stage the cts will add the clock buffers and the netlist will be modified. 

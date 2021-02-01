@@ -320,6 +320,14 @@ run_synthesis
 
 ### Fixing slack violations
 
-Slack violations are important issues to be tackled and are checked after each stages. For this the static timing analysis is to be done to ensure that the the set up and hold slack are maintained within the prescribed limits viz 0 or above. The timing performance of the design is analyse using the openSTA tool. During the pre cts we are mostly concern with the set up timing analysis. The sta tool basically gives information about the worst negative slack and total negative slack. 
+Slack violations are important issues to and has to be rectified for optimum perfrmance of the ic. For this the static timing analysis is to be done to ensure that the the set up and hold slack are maintained within the prescribed limits viz 0 or above. The timing performance of the design is analyse using the openSTA tool. Prior to performing the cts the timing performance of the design is to be checked usign sta tool. For this the configuration file `pre_sta.conf` is invoked by the sta tool . THe configuration file along with the design sdc file is to copied into the `./picorv32a/src/` folder. After invoking the pre_sta.conf file in sta tool`sta pre_sta.conf`, the timing information of the design which includes the skew, delays, data arrival time, data required time etc is defined which is the one obtained during the synthesis stage.
+
+Now as the design requirement is that the set up slack and the hold slack should be 0 or positive, certain design correction steps are to be done which includes.
+
+a. Setting the `SYNTH_STRATEGY` switch
+b. Setting the `SYNTH_BUFFERING` switch
+c. Setting the `SYNTH_SIZING` switch
+d. Optimizing the maximum fan out `SYNTH_MAX_FANOUT) `
+
 
 

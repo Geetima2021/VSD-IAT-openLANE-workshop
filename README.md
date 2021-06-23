@@ -6,7 +6,7 @@
 
 - [Overview](#overview)
 - [Pre requisite](#Prerequisite)
-- [Introduction](#Introduction)'
+- [Introduction](#Introduction)
 - [Day 1 Inception and introduction of openlane tool openLANE and skywater 130 nm](#day)
   - [Introduction to QFN -48 package, chip, pads, core, die, IPs](#Imtro)
   - [Introduction to RISCV](#RiscV)
